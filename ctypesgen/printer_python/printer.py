@@ -248,7 +248,7 @@ class WrapperPrinter:
         # handle unnamed fields.
         unnamed_fields = []
         names = set([x[0] for x in struct.members])
-        anon_prefix = "unnamed_"
+        anon_prefix = f"unnamed_{struct.c_name().split()[-1]}_"
         n = 1
         for mi in range(len(struct.members)):
             mem = list(struct.members[mi])
