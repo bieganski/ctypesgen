@@ -13,11 +13,47 @@ from ctypesgen.descriptions import (
     EnumDescription,
     StructDescription,
     TypedefDescription,
+    DescriptionCollection
 )
 from ctypesgen.messages import warning_message, status_message
 
+import sys
+from ctypesgen.ctypedescs import CtypesStruct, CtypesBitfield
 
 # Processor functions
+def flatten_anonymous_structs(data : DescriptionCollection, options):
+
+    def transfer_fields(obj: StructDescription):
+        if obj.members is None:
+            print(f"WARNING: {obj} has no 'members'!", file=sys.stderr)
+            return
+        for maybe_name, ctype in obj.members:
+            if maybe_name is None:
+                if isinstance(ctype, CtypesStruct):
+                    assert "_anon_" in str(ctype), ctype
+                    yield from transfer_fields(ctype)
+                else:
+                    assert isinstance(ctype, CtypesBitfield)
+                    yield (maybe_name, ctype)
+            else:
+                yield (maybe_name, ctype)
+    
+    garbage = []
+    print(len(data.output_order), file=sys.stderr)
+    for obj in reversed(data.all):
+        if isinstance(obj, StructDescription):
+            if "_anon_" in obj.py_name():
+                garbage.append(obj)
+            else:
+                # recursively flatten.
+                obj.members = [x for x in transfer_fields(obj)]
+                # if "bpf_attr" in obj.py_name():
+                #     raise ValueError(obj.members)
+    # data.all = [x for x in data.all if x not in garbage]
+    
+    # TODO: no garbage deletion, as current implementation has false-positives - removes structs that are actually needed.
+    # data.output_order = [x for x in data.output_order if x[1] not in garbage]
+    print(len(data.output_order), file=sys.stderr)
 
 
 def automatically_typedef_structs(data, options):

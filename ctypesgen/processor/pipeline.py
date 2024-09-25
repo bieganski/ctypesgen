@@ -46,6 +46,7 @@ from ctypesgen.processor.operations import (
     remove_descriptions_in_system_headers,
     remove_macros,
     remove_NULL,
+    flatten_anonymous_structs,
 )
 
 
@@ -68,6 +69,8 @@ def process(data, options):
     calculate_final_inclusion(data, options)
     print_errors_encountered(data, options)
     calculate_final_inclusion(data, options)
+
+    flatten_anonymous_structs(data, options)
 
 
 def calculate_final_inclusion(data, opts):

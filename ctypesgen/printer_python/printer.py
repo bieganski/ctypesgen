@@ -29,14 +29,14 @@ class WrapperPrinter:
         if not self.options.embed_preamble and outpath:
             self._copy_preamble_loader_files(outpath)
 
-        self.print_header()
-        self.file.write("\n")
+        # self.print_header()
+        # self.file.write("\n")
 
-        self.print_preamble()
-        self.file.write("\n")
+        # self.print_preamble()
+        # self.file.write("\n")
 
-        self.print_loader()
-        self.file.write("\n")
+        # self.print_loader()
+        # self.file.write("\n")
 
         self.print_group(self.options.libraries, "libraries", self.print_library)
         self.print_group(self.options.modules, "modules", self.print_module)
@@ -53,6 +53,7 @@ class WrapperPrinter:
             "undef": self.print_undef,
         }
 
+        # raise ValueError(data.output_order)
         for kind, desc in data.output_order:
             if desc.included:
                 method_table[kind](desc)

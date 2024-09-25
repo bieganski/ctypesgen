@@ -347,7 +347,12 @@ def main(givenargs=None):
         assert False  # handled by argparse choices
 
     # Step 1: Parse
+    from inspect import getmembers
+    from pprint import pformat
+    x = lambda _a: pformat(getmembers(_a))
     descriptions = core_parser.parse(args.headers, args)
+    # raise ValueError(descriptions)
+    # raise ValueError(x(descriptions.structs[-1]))
 
     # Step 2: Process
     processor.process(descriptions, args)

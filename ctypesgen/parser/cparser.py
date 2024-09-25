@@ -117,9 +117,14 @@ class CParser(object):
 
         self.handle_status("Preprocessing %s" % filename)
         self.preprocessor_parser.parse(filename)
+        # raise ValueError(self.preprocessor_parser.output)
         self.lexer.input(self.preprocessor_parser.output)
         self.handle_status("Parsing %s" % filename)
         self.parser.parse(lexer=self.lexer, debug=debug, tracking=True)
+        # from inspect import getmembers
+        # from pprint import pformat
+        # x = lambda _a: pformat(getmembers(_a))
+        # raise ValueError("OK")
 
     # ----------------------------------------------------------------------
     # Parser interface.  Override these methods in your subclass.

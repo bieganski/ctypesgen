@@ -10,6 +10,7 @@ __docformat__ = "restructuredtext"
 
 __all__ = ["CtypesParser"]
 
+from typing import Any
 from ctypesgen.ctypedescs import (
     CtypesArray,
     CtypesBitfield,
@@ -74,7 +75,13 @@ def get_decl_id(decl):
         p_name = decl.identifier
     return p_name
 
+# from autologging import traced, logged, TRACE
+# import sys
+# import logging
+# logging.basicConfig(level=logging.DEBUG, stream=sys.stderr, format="%(levelname)s:%(filename)s,%(lineno)d:%(name)s.%(funcName)s:%(message)s")
 
+# @traced
+# @logged
 class CtypesParser(CParser):
     """Parse a C file for declarations that can be used by ctypes.
 
@@ -87,7 +94,7 @@ class CtypesParser(CParser):
         if not options.no_python_types:
             self.type_map.update(ctypes_type_map_python_builtin)
 
-    def make_struct_from_specifier(self, specifier):
+    def make_struct_from_specifier(self, specifier: StructTypeSpecifier):
         variety = {True: "union", False: "struct"}[specifier.is_union]
         tag = specifier.tag
 
